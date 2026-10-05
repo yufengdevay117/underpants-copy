@@ -46,7 +46,11 @@ _.identity = function(value){
 * _.typeOf([1,2,3]) -> "array"
 */
 
-
+_.typeOf = function(value){
+    if (Array.isArray(value)) return "array";
+    if (value === null) return "null";
+    return typeof value;
+};
 
 /** _.first
 * Arguments:
@@ -66,7 +70,25 @@ _.identity = function(value){
 *   _.first(["a", "b", "c"], 2) -> ["a", "b"]
 */
 
-
+_.first = function(array, number) {
+    // 1. Check if array is actually an array
+    if (!Array.isArray(array)) {
+      return [];
+    }
+  
+    // 2. Check if number is not given or not a number
+    if (typeof number !== "number") {
+      return array[0];
+    }
+  
+    // 3. Check if number is negative
+    if (number < 0) {
+      return [];
+    }
+  
+    // 4. Return the first 'number' items (slice automatically handles numbers larger than array.length)
+    return array.slice(0, number);
+  };
 
 
 /** _.last
@@ -87,7 +109,9 @@ _.identity = function(value){
 *   _.last(["a", "b", "c"], 2) -> ["b", "c"]
 */
 
+_.last = function(array, number){
 
+};
 
 /** _.indexOf
 * Arguments:
@@ -224,13 +248,10 @@ _.identity = function(value){
 *   _.map(obj, function(value){ return value * 10});  // [10, 20, 30]
 */
 
-
 _.map = function(collection, func){
-    const output = [];
-    // if collection is an array
+
     if (Array.isArray(collection)){
         for (let i = 0; i < collection.length; i++){
-            // invoke function passing in these arguments: the element, it's index, <collection>
             const result = func(collection[i], i, collection);
             output.push(result);
         }
@@ -239,15 +260,48 @@ _.map = function(collection, func){
     }
 
     return output;
-}
+};
 
-_.map([1, 2, 3], function(x){ return x * 10}); // [10, 20, 30]
-//     ^
+_.map([1,2,3,4], function(e){return e * 2});
+//                        1
+/*
+output = []
+// if (collection is an array) // true
+    // for loop
+        // i = 0
+            // const result = func(1, 0, [1, 2, 3, 4]) => 2
+            // output.push(2)
+        // i = 1
+            // const result = func(2, 1, [1, 2, 3 ,4]) => 4
+            // output.push(4)
+        // i = 2
+            // const result = func(3, 2, [1, 2, 3, 4]) => 6
+            // output.push(6)
+        // i = 3
+            // const result = func(4, 3, [1, 2, 3 ,4]) => 8
+            // output.push(8)
 
-_.map(['alex', 'francis', 'aaron'], function(str){ return str.toUpperCase()}); // ['ALEX', 'FRANCIS', 'AARON']
+*/
+
+_.map(['a', 'b', 'c'], function(str){
+    return str.toUpperCase();
+});
+/*
+output = []
+// if (collection is an array) // true
+    // for loop
+        // i = 0
+            // const result = func('a', 0, ['a', 'b', 'c']) => 'A'
+            // output.push('A')
+        // i = 1
+            // const result = func('b', 1, ['a', 'b', 'c']) => 'B'
+            // output.push('B')
+        // i = 2
+            // const result = func('c', 2, ['a', 'b', 'c']) => 'C'
+            // output.push('C')
 
 
-
+*/
 
 
 /** _.pluck
