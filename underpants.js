@@ -110,7 +110,27 @@ _.first = function(array, number) {
 */
 
 _.last = function(array, number){
-
+    if (!Array.isArray(array)) {
+        return [];
+      }
+    
+      // 2. Return the LAST element if number is not given or not a number
+      if (typeof number !== "number") {
+        return array[array.length - 1];
+      }
+    
+      // 3. Return [] if number is negative
+      if (number < 0) {
+        return [];
+      }
+    
+      // 4. Return the last <number> items
+      // If number is greater than array.length, return the whole array
+      if (number > array.length) {
+        return array;
+      }
+    
+      return array.slice(array.length - number);
 };
 
 /** _.indexOf
@@ -129,7 +149,14 @@ _.last = function(array, number){
 *   _.indexOf(["a","b","c"], "d") -> -1
 */
 
-
+_.indexOf = function(array, value) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === value) {
+        return i; // Returns the index of the first match immediately
+      }
+    }
+    return -1; // Returns -1 if no match is found after checking all elements
+  };
 
 
 /** _.contains
@@ -147,6 +174,14 @@ _.last = function(array, number){
 *   _.contains([1,"two", 3.14], "two") -> true
 */
 
+_.contains = function(array, value) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === value) {
+        return true;
+      }
+    }
+    return false;
+  };
 
 /** _.each
 * Arguments:
@@ -164,7 +199,17 @@ _.last = function(array, number){
 *      -> should log "a" "b" "c" to the console
 */
 
-
+_.each = function(collection, action) {
+    if (Array.isArray(collection)) {
+      for (let i = 0; i < collection.length; i++) {
+        action(collection[i], i, collection);
+      }
+    } else {
+      for (let key in collection) {
+        action(collection[key], key, collection);
+      }
+    }
+  };
 
 /** _.unique
 * Arguments:
@@ -176,8 +221,15 @@ _.last = function(array, number){
 *   _.unique([1,2,2,4,5,6,5,2]) -> [1,2,4,5,6]
 */                                             
 
-
-
+_.unique = function(array) {
+    let result = [];
+    for (let i = 0; i < array.length; i++) {
+      if (_.indexOf(result, array[i]) === -1) {
+        result.push(array[i]);
+      }
+    }
+    return result;
+  };
 
 /** _.filter
 * Arguments:
@@ -195,7 +247,17 @@ _.last = function(array, number){
 *   use _.each in your implementation
 */
 
-
+_.filter = function(array, func) {
+    let result = [];
+    
+    for (let i = 0; i < array.length; i++) {
+      if (func(array[i], i, array) === true) {
+        result.push(array[i]);
+      }
+    }
+    
+    return result;
+  };
 
 /** _.reject
 * Arguments:
@@ -210,6 +272,17 @@ _.last = function(array, number){
 *   _.reject([1,2,3,4,5], function(e){return e%2 === 0}) -> [1,3,5]
 */
 
+_.reject = function(array, func) {
+    let result = [];
+    
+    for (let i = 0; i < array.length; i++) {
+      if (!func(array[i], i, array)) {
+        result.push(array[i]);
+      }
+    }
+    
+    return result;
+  };
 
 /** _.partition
 * Arguments:
@@ -230,6 +303,20 @@ _.last = function(array, number){
 }
 */
 
+_.partition = function(array, func) {
+    let truthy = [];
+    let falsy = [];
+    
+    for (let i = 0; i < array.length; i++) {
+      if (func(array[i], i, array)) {
+        truthy.push(array[i]);
+      } else {
+        falsy.push(array[i]);
+      }
+    }
+    
+    return [truthy, falsy];
+  };
 
 /** _.map
 * Arguments:
@@ -249,6 +336,7 @@ _.last = function(array, number){
 */
 
 _.map = function(collection, func){
+    let output = [];
 
     if (Array.isArray(collection)){
         for (let i = 0; i < collection.length; i++){
@@ -256,13 +344,15 @@ _.map = function(collection, func){
             output.push(result);
         }
     } else { // else it's an object
-
+        for (let key in collection){
+            const result = func(collection[key], key, collection);
+            output.push(result);
+        }
     }
 
     return output;
 };
 
-_.map([1,2,3,4], function(e){return e * 2});
 //                        1
 /*
 output = []
@@ -283,9 +373,7 @@ output = []
 
 */
 
-_.map(['a', 'b', 'c'], function(str){
-    return str.toUpperCase();
-});
+
 /*
 output = []
 // if (collection is an array) // true
@@ -338,6 +426,7 @@ output = []
 *   _.every([2,4,6], function(e){return e % 2 === 0}) -> true
 *   _.every([1,2,3], function(e){return e % 2 === 0}) -> false
 */
+
 
 
 
