@@ -374,6 +374,7 @@ output = []
 */
 
 
+
 /*
 output = []
 // if (collection is an array) // true
@@ -392,6 +393,7 @@ output = []
 */
 
 
+
 /** _.pluck
 * Arguments:
 *   1) An array of objects
@@ -403,7 +405,11 @@ output = []
 *   _.pluck([{a: "one"}, {a: "two"}], "a") -> ["one", "two"]
 */
 
-
+_.pluck = function(array, property){
+return _.map(array, function(item){
+   return item[property];
+ });
+};
 
 
 /** _.every
@@ -427,7 +433,33 @@ output = []
 *   _.every([1,2,3], function(e){return e % 2 === 0}) -> false
 */
 
+_.every = function(collection, func){
+// If function is not provided, default to an identity function (returns truthiness of element)
+if (typeof func !== 'function') {
+  func = function(val) {
+    return val;
+  };
+}
 
+if (Array.isArray(collection)) {
+  for (let i = 0; i < collection.length; i++) {
+    // Coerce callback output to boolean to handle non-boolean returns
+    if (!func(collection[i], i, collection)) {
+      return false;
+    }
+  }
+} else if (typeof collection === 'object' && collection !== null) {
+  for (let key in collection) {
+    if (collection.hasOwnProperty(key)) {
+      if (!func(collection[key], key, collection)) {
+        return false;
+      }
+    }
+  }
+}
+
+return true;
+};
 
 
 /** _.some
@@ -451,6 +483,33 @@ output = []
 *   _.some([1,2,3], function(e){return e % 2 === 0}) -> true
 */
 
+_.some = function(collection, func){
+// If function is not provided, default to an identity function (returns truthiness of element)
+if (typeof func !== 'function') {
+  func = function(val) {
+    return val;
+  };
+}
+
+if (Array.isArray(collection)) {
+  for (let i = 0; i < collection.length; i++) {
+    // Double negation (!!) coerces callback output to boolean to handle non-boolean returns
+    if (!!func(collection[i], i, collection)) {
+      return true;
+    }
+  }
+} else if (typeof collection === 'object' && collection !== null) {
+  for (let key in collection) {
+    if (collection.hasOwnProperty(key)) {
+      if (!!func(collection[key], key, collection)) {
+        return true;
+      }
+    }
+  }
+}
+
+return false;
+};
 
 /** _.reduce
 * Arguments:
@@ -471,6 +530,22 @@ output = []
 *   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
 */
 
+_.reduce = function(array, func, seed) {
+  let accumulator = seed;
+  let startIndex = 0;
+
+  // Handle missing seed edge case
+  if (seed === undefined) {
+    accumulator = array[0];
+    startIndex = 1;
+  }
+
+  for (let i = startIndex; i < array.length; i++) {
+    accumulator = func(accumulator, array[i], i);
+  }
+
+  return accumulator;
+};
 
 /** _.extend (equivalent of the Object.assign())
 * Arguments:
@@ -487,7 +562,19 @@ output = []
 *   _.extend(data, {a:"two"}); -> data now equals {a:"two"}
 */
 
-
+_.extend = function(target, ...objects){
+  for (let i = 0; i < objects.length; i++) {
+    const obj = objects[i];
+    if (obj !== null && typeof obj === 'object') {
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          target[key] = obj[key];
+        }
+      }
+    }
+  }
+  return target;
+};
 
 
 
